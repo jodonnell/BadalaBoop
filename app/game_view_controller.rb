@@ -10,6 +10,27 @@ class GameViewController < UIViewController
 
     @action = createButton(260, 'actionTapped', 'Start')
     @play = createButton(320, 'playTapped', 'Play')
+    @upload = createButton(380, 'uploadTapped', 'Upload')
+    @textField = createTextField
+
+
+  end
+
+  def createTextField
+    textField = UITextField.alloc.init
+    textField.returnKeyType = UIReturnKeyDone;
+    textField.placeholder = "Email address";
+    textField.textColor = UIColor.whiteColor
+    textField.frame = getFrame 200
+    textField.autocapitalizationType = UITextAutocapitalizationTypeWords;
+    textField.adjustsFontSizeToFitWidth = TRUE;
+    textField.addTarget(self,  action:'doNothing',  forControlEvents:UIControlEventEditingDidEndOnExit)
+    view.addSubview(textField)
+    textField
+  end
+
+
+  def doNothing
   end
 
   def createButton yPos, action, normalTitle
@@ -18,9 +39,14 @@ class GameViewController < UIViewController
     button.setTitle(normalTitle, forState:UIControlStateNormal)
     button.setTitle('Stop', forState:UIControlStateSelected)
     button.addTarget(self, action:action, forControlEvents:UIControlEventTouchUpInside)
-    button.frame = [[margin, yPos], [view.frame.size.width - margin * 2, 40]]
+    button.frame = getFrame yPos
     view.addSubview(button)
     button
+  end
+
+  def getFrame yPos
+    margin = 20
+    [[margin, yPos], [view.frame.size.width - margin * 2, 40]]
   end
 
   def actionTapped
@@ -40,4 +66,18 @@ class GameViewController < UIViewController
     @avPlayer.prepareToPlay
     @avPlayer.play
   end
+
+  def uploadTapped
+    url = NSURL.URLWithString("http://boobadoo.herokuapp.com/sound_files")
+    @request = ASIFormDataRequest.alloc.initWithURL(url)
+    @request.setFile(FileUrl.recorderFilePath, forKey:"file")
+    @request.startSynchronous
+  end
+
+  def download
+    request = ASIHTTPRequest.requestWithURL(url)
+    request.setDownloadDestinationPath("/Users/ben/Desktop/my_file.txt")
+    request.startSynchronous
+  end
+
 end
