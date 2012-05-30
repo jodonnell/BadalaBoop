@@ -5,8 +5,9 @@ class GameViewController < UIViewController
 
   def viewDidLoad
     super
+    @fileUrl = FileUrl.new
     @recorder = Recorder.new
-    @recording = @recorder.newRecorder(FileUrl.url)
+    @recording = @recorder.newRecorder(@fileUrl.url)
     @isRecording = false
 
     @action = createButton(260, 'actionTapped', 'Start')
@@ -19,12 +20,12 @@ class GameViewController < UIViewController
 
   def createTextField
     textField = UITextField.alloc.init
-    textField.returnKeyType = UIReturnKeyDone;
-    textField.placeholder = "Email address";
+    textField.returnKeyType = UIReturnKeyDone
+    textField.placeholder = "Email address"
     textField.textColor = UIColor.whiteColor
     textField.frame = getFrame 200
-    textField.autocapitalizationType = UITextAutocapitalizationTypeWords;
-    textField.adjustsFontSizeToFitWidth = TRUE;
+    textField.autocapitalizationType = UITextAutocapitalizationTypeWords
+    textField.adjustsFontSizeToFitWidth = true
     textField.addTarget(self, action:'doNothing', forControlEvents:UIControlEventEditingDidEndOnExit)
     view.addSubview(textField)
     textField
@@ -62,7 +63,7 @@ class GameViewController < UIViewController
 
   def playTapped
     err = Pointer.new(:object)
-    @avPlayer = AVAudioPlayer.alloc.initWithContentsOfURL(FileUrl.url, error:err)
+    @avPlayer = AVAudioPlayer.alloc.initWithContentsOfURL(@fileUrl.url, error:err)
     @avPlayer.prepareToPlay
     @avPlayer.play
   end
@@ -72,7 +73,7 @@ class GameViewController < UIViewController
 
     url = NSURL.URLWithString("http://boobadoo.herokuapp.com/sound_files")
     @request = ASIFormDataRequest.alloc.initWithURL(url)
-    @request.setFile(FileUrl.recorderFilePath, forKey:"file")
+    @request.setFile(@fileUrl.recorderFilePath, forKey:"file")
     @request.setPostValue(@textField.text, forKey:"email")
     @request.startSynchronous
   end
@@ -85,7 +86,7 @@ class GameViewController < UIViewController
     # ASIS3Request.setSharedSecretAccessKey("AKIAJAIG2D6NSZ2TI7CA")
     # ASIS3Request.setSharedAccessKey("AKIAJAIG2D6NSZ2TI7CA")
  
-    # request = ASIS3ObjectRequest.PUTRequestForFile(FileUrl.recorderFilePath, withBucket:"badalaboop", key:"boom")
+    # request = ASIS3ObjectRequest.PUTRequestForFile(@fileUrl.recorderFilePath, withBucket:"badalaboop", key:"boom")
     # request.startSynchronous
     # if (request.error)
     #   NSLog("%@", request.error.localizedDescription)

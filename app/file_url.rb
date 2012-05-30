@@ -1,15 +1,18 @@
 class FileUrl
-  def self.dir
+  def initialize
+    now = Time.now
+    @time = now.description
+  end
+
+  def dir
     NSHomeDirectory().stringByAppendingPathComponent("Documents")
   end
 
-  def self.recorderFilePath
-    #now = Time.now
-    #caldate = now.description
-    "#{dir}/MySound.caf"
+  def recorderFilePath
+    "#{dir}/#{@time}.caf"
   end
 
-  def self.url
+  def url
     NSURL.fileURLWithPath(recorderFilePath)
   end
 
