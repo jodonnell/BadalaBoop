@@ -31,12 +31,12 @@ class Recorder
     propertySetError = 0
     allowMixing = Pointer.new(:bool)
     allowMixing[0] = true
-    propertySetError = AudioSessionSetProperty(1668114808, 4, allowMixing);
+    propertySetError = AudioSessionSetProperty(1668114808, 4, allowMixing) # kAudioSessionProperty_OverrideCategoryMixWithOthers
   end
 
   def playThroughSpeaker
     audioRouteOverride = Pointer.new(:uint)
-    audioRouteOverride[0] = 1936747378
+    audioRouteOverride[0] = 1936747378 # kAudioSessionOverrideAudioRoute_Speaker
     AudioSessionSetProperty(1870033508, 4, audioRouteOverride) # kAudioSessionProperty_OverrideAudioRoute
   end
 
@@ -52,7 +52,7 @@ class Recorder
   end
 
   def recordSettings
-    {AVFormatIDKey => 1768775988, AVSampleRateKey => 44100.0, AVNumberOfChannelsKey => 1} # KAudioFormatAppleIMA4
+    {AVFormatIDKey => 1768775988, AVSampleRateKey => 44100.0, AVNumberOfChannelsKey => 1} # kAudioFormatAppleIMA4
   end
 
 end
