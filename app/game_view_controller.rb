@@ -79,12 +79,24 @@ class GameViewController < UIViewController
   end
 
   def uploadToS3
-    secretAccessKey = "Tkv7xiK5ofLxvoQLv+x20mmhKypBIJEVixZ8M6rO"
-    accessKey = "AKIAJAIG2D6NSZ2TI7CA"
-    credentials = AmazonCredentials.alloc.initWithAccessKey(accessKey, withSecretKey: secretAccessKey)
+    url = NSURL.URLWithString("https://badalaboop.s3.amazonaws.com/")
+    @request = ASIFormDataRequest.alloc.initWithURL(url)
+    @request.setPostValue("uploads/${filename}", forKey:"key")
+    @request.setPostValue("", forKey:"AWSAccessKeyId")
+    @request.setPostValue("private", forKey:"acl")
+    @request.setPostValue("http://localhost/", forKey:"success_action_redirect")
+    @request.setPostValue("", forKey:"policy")
+    @request.setPostValue("", forKey:"signature")
+    @request.setPostValue("application/octet-stream ", forKey:"Content-Type")
+    @request.setFile(@fileUrl.recorderFilePath, forKey:"file")
 
-    # ASIS3Request.setSharedSecretAccessKey("AKIAJAIG2D6NSZ2TI7CA")
-    # ASIS3Request.setSharedAccessKey("AKIAJAIG2D6NSZ2TI7CA")
+    @request.startSynchronous
+
+
+    # credentials = AmazonCredentials.alloc.initWithAccessKey(accessKey, withSecretKey: secretAccessKey)
+
+    # ASIS3Request.setSharedSecretAccessKey("")
+    # ASIS3Request.setSharedAccessKey("")
  
     # request = ASIS3ObjectRequest.PUTRequestForFile(@fileUrl.recorderFilePath, withBucket:"badalaboop", key:"boom")
     # request.startSynchronous
