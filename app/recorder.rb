@@ -25,14 +25,14 @@ class Recorder
     end
   end
 
-  def enableMixing
+  def self.enableMixing
     propertySetError = 0
     allowMixing = Pointer.new(:bool)
     allowMixing[0] = true
     propertySetError = AudioSessionSetProperty(1668114808, 4, allowMixing);
   end
 
-  def playThroughSpeaker
+  def self.playThroughSpeaker
     audioRouteOverride = Pointer.new(:uint)
     audioRouteOverride[0] = 1936747378
     AudioSessionSetProperty(1870033508, 4, audioRouteOverride) # kAudioSessionProperty_OverrideAudioRoute
