@@ -5,8 +5,9 @@ class GameViewController < UIViewController
 
   def viewDidLoad
     super
-    @recorder = Recorder.newRecorder(FileUrl.url)
-    @recording = false
+    @recorder = Recorder.new
+    @recording = @recorder.newRecorder(FileUrl.url)
+    @isRecording = false
 
     @action = createButton(260, 'actionTapped', 'Start')
     @play = createButton(320, 'playTapped', 'Play')
@@ -24,11 +25,10 @@ class GameViewController < UIViewController
     textField.frame = getFrame 200
     textField.autocapitalizationType = UITextAutocapitalizationTypeWords;
     textField.adjustsFontSizeToFitWidth = TRUE;
-    textField.addTarget(self,  action:'doNothing',  forControlEvents:UIControlEventEditingDidEndOnExit)
+    textField.addTarget(self, action:'doNothing', forControlEvents:UIControlEventEditingDidEndOnExit)
     view.addSubview(textField)
     textField
   end
-
 
   def doNothing
   end
@@ -50,12 +50,12 @@ class GameViewController < UIViewController
   end
 
   def actionTapped
-   if @recording
-     @recorder.stop
-     @recording = false
+   if @isRecording
+     @recording.stop
+     @isRecording = false
    else
-     @recorder.record
-     @recording = true
+     @recording.record
+     @isRecording = true
    end
     @action.selected = !@action.selected?
   end
