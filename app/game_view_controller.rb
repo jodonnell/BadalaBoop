@@ -68,11 +68,29 @@ class GameViewController < UIViewController
   end
 
   def uploadTapped
+    #uploadToS3
+
     url = NSURL.URLWithString("http://boobadoo.herokuapp.com/sound_files")
     @request = ASIFormDataRequest.alloc.initWithURL(url)
     @request.setFile(FileUrl.recorderFilePath, forKey:"file")
     @request.setPostValue(@textField.text, forKey:"email")
     @request.startSynchronous
+  end
+
+  def uploadToS3
+    secretAccessKey = "Tkv7xiK5ofLxvoQLv+x20mmhKypBIJEVixZ8M6rO"
+    accessKey = "AKIAJAIG2D6NSZ2TI7CA"
+    credentials = AmazonCredentials.alloc.initWithAccessKey(accessKey, withSecretKey: secretAccessKey)
+
+    # ASIS3Request.setSharedSecretAccessKey("AKIAJAIG2D6NSZ2TI7CA")
+    # ASIS3Request.setSharedAccessKey("AKIAJAIG2D6NSZ2TI7CA")
+ 
+    # request = ASIS3ObjectRequest.PUTRequestForFile(FileUrl.recorderFilePath, withBucket:"badalaboop", key:"boom")
+    # request.startSynchronous
+    # if (request.error)
+    #   NSLog("%@", request.error.localizedDescription)
+    # end
+
   end
 
   def download
