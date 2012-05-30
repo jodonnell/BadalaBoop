@@ -16,10 +16,26 @@ class Recorder
   end
 
   def self.setActive
+    enableMixing
+    playThroughSpeaker
+
     err = Pointer.new(:object)
     unless (audioSession.setActive(1, error:err))
       NSLog("audioSession: %@ %d %@", err.domain, err.code, err.userInfo.description)
     end
+  end
+
+  def enableMixing
+    propertySetError = 0
+    allowMixing = Pointer.new(:bool)
+    allowMixing[0] = true
+    propertySetError = AudioSessionSetProperty(1668114808, 4, allowMixing);
+  end
+
+  def playThroughSpeaker
+    audioRouteOverride = Pointer.new(:uint)
+    audioRouteOverride[0] = 1936747378
+    AudioSessionSetProperty(1870033508, 4, audioRouteOverride) # kAudioSessionProperty_OverrideAudioRoute
   end
 
   def self.createRecorder url
@@ -34,7 +50,7 @@ class Recorder
   end
 
   def self.recordSettings
-    {AVFormatIDKey => 1768775988, AVSampleRateKey => 44100.0, AVNumberOfChannelsKey => 1}
+    {AVFormatIDKey => 1768775988, AVSampleRateKey => 44100.0, AVNumberOfChannelsKey => 1} # KAudioFormatAppleIMA4
   end
 
 end
