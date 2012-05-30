@@ -73,8 +73,7 @@ class GameViewController < UIViewController
 
     url = NSURL.URLWithString("http://boobadoo.herokuapp.com/sound_files")
     @request = ASIFormDataRequest.alloc.initWithURL(url)
-    @request.setFile(@fileUrl.recorderFilePath, forKey:"file")
-    @request.setPostValue(@textField.text, forKey:"email")
+    @request.setFile(@fileUrl.recorderFilePath, forKey:"sound_file[file]")
     @request.startSynchronous
   end
 
