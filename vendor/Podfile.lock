@@ -1,7 +1,0 @@
-PODS:
-  - ASIHTTPRequest (1.8.1):
-    - Reachability
-  - Reachability (3.0.0)
-
-DEPENDENCIES:
-  - ASIHTTPRequest

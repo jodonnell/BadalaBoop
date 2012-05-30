@@ -1,4 +1,0 @@
-PODS_ROOT = $(SRCROOT)/Pods
-HEADER_SEARCH_PATHS = "$(PODS_ROOT)/Headers" "$(PODS_ROOT)/Headers/ASIHTTPRequest" "$(PODS_ROOT)/Headers/Reachability"
-ALWAYS_SEARCH_USER_PATHS = YES
-OTHER_LDFLAGS = -ObjC -all_load -framework MobileCoreServices -framework CFNetwork -framework CoreGraphics -lz.1 -framework SystemConfiguration
