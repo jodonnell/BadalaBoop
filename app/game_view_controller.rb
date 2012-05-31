@@ -5,110 +5,86 @@ class GameViewController < UIViewController
 
   def viewDidLoad
     super
-    @fileUrl = FileUrl.new
+    @recordings = []
+
     @recorder = Recorder.new
-    @recording = @recorder.newRecorder(@fileUrl.url)
     @isRecording = false
+    newRecording
 
-    @action = createButton(260, 'actionTapped', 'Start')
-    @play = createButton(320, 'playTapped', 'Play')
-    @upload = createButton(380, 'uploadTapped', 'Upload')
-    @textField = createTextField
+    ui = UI.new(view.frame.size.width)
+    @recordButton = ui.createButton(200, 'recordButtonTapped', 'Record', self)
+    @loopButton = ui.createButton(260, 'loopButtonTapped', 'Loop', self)
+    @playButton = ui.createButton(320, 'playButtonTapped', 'Play', self)
+    @upload = ui.createButton(380, 'uploadTapped', 'Upload', self)
+    @textField = ui.createTextField(self)
 
-
+    view.addSubview(@recordButton)
+    view.addSubview(@loopButton)
+    view.addSubview(@playButton)
+    view.addSubview(@upload)
+    view.addSubview(@textField)
   end
 
-  def createTextField
-    textField = UITextField.alloc.init
-    textField.returnKeyType = UIReturnKeyDone
-    textField.placeholder = "Email address"
-    textField.textColor = UIColor.whiteColor
-    textField.frame = getFrame 200
-    textField.autocapitalizationType = UITextAutocapitalizationTypeWords
-    textField.adjustsFontSizeToFitWidth = true
-    textField.addTarget(self, action:'doNothing', forControlEvents:UIControlEventEditingDidEndOnExit)
-    view.addSubview(textField)
-    textField
+  def newRecording
+    @fileUrl = FileUrl.new
+    @recording = @recorder.newRecorder(@fileUrl.url)
   end
 
   def doNothing
   end
 
-  def createButton yPos, action, normalTitle
-    margin = 20
-    button = UIButton.buttonWithType(UIButtonTypeRoundedRect)
-    button.setTitle(normalTitle, forState:UIControlStateNormal)
-    button.setTitle('Stop', forState:UIControlStateSelected)
-    button.addTarget(self, action:action, forControlEvents:UIControlEventTouchUpInside)
-    button.frame = getFrame yPos
-    view.addSubview(button)
-    button
+  def recordButtonTapped
+    if @isRecording
+      @recording.stop
+      @recordings << @fileUrl.url
+      newRecording
+    else
+      @recording.record
+    end
+    @recordButton.selected = !@recordButton.selected?
+    @isRecording = !@isRecording
+
   end
 
-  def getFrame yPos
-    margin = 20
-    [[margin, yPos], [view.frame.size.width - margin * 2, 40]]
+  def playButtonTapped
+    play
   end
 
-  def actionTapped
-   if @isRecording
-     @recording.stop
-     @isRecording = false
-   else
-     @recording.record
-     @isRecording = true
-   end
-    @action.selected = !@action.selected?
+  def play
+    @player = Player.new @recordings
+    @player.play
   end
 
-  def playTapped
-    err = Pointer.new(:object)
-    @avPlayer = AVAudioPlayer.alloc.initWithContentsOfURL(@fileUrl.url, error:err)
-    @avPlayer.prepareToPlay
-    @avPlayer.play
+  def loopButtonTapped
+    return if @isRecording
+    if @isLooping
+      @player.stop
+    else
+      @player = Player.new @recordings, true
+      @player.play
+    end
+    @isLooping = !@isLooping
   end
 
   def uploadTapped
-    #uploadToS3
-
-    url = NSURL.URLWithString("http://boobadoo.herokuapp.com/sound_files")
+    url = NSURL.URLWithString("http://localhost:3000/sound_files")
     @request = ASIFormDataRequest.alloc.initWithURL(url)
     @request.setFile(@fileUrl.recorderFilePath, forKey:"sound_file[file]")
     @request.startSynchronous
-  end
-
-  def uploadToS3
-    url = NSURL.URLWithString("https://badalaboop.s3.amazonaws.com/")
-    @request = ASIFormDataRequest.alloc.initWithURL(url)
-    @request.setPostValue("uploads/${filename}", forKey:"key")
-    @request.setPostValue("", forKey:"AWSAccessKeyId")
-    @request.setPostValue("private", forKey:"acl")
-    @request.setPostValue("http://localhost/", forKey:"success_action_redirect")
-    @request.setPostValue("", forKey:"policy")
-    @request.setPostValue("", forKey:"signature")
-    @request.setPostValue("application/octet-stream ", forKey:"Content-Type")
-    @request.setFile(@fileUrl.recorderFilePath, forKey:"file")
-
-    @request.startSynchronous
-
-
-    # credentials = AmazonCredentials.alloc.initWithAccessKey(accessKey, withSecretKey: secretAccessKey)
-
-    # ASIS3Request.setSharedSecretAccessKey("")
-    # ASIS3Request.setSharedAccessKey("")
- 
-    # request = ASIS3ObjectRequest.PUTRequestForFile(@fileUrl.recorderFilePath, withBucket:"badalaboop", key:"boom")
-    # request.startSynchronous
-    # if (request.error)
-    #   NSLog("%@", request.error.localizedDescription)
-    # end
-
   end
 
   def download
     request = ASIHTTPRequest.requestWithURL(url)
     request.setDownloadDestinationPath("/Users/ben/Desktop/my_file.txt")
     request.startSynchronous
+  end
+
+  def recordButton
+    @recordButton
+  end
+
+  def playButton
+    @playButton
   end
 
 end

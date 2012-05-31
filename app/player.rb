@@ -1,15 +1,22 @@
 class Player
-  def initialize url
+  def initialize recordings, loop=false
+    recordings = recordings
+
     err = Pointer.new(:object)
-    @avPlayer = AVAudioPlayer.alloc.initWithContentsOfURL(url, error:err)
-    puts err[0].localizedDescription if (!@avPlayer)
-    err = Pointer.new(:object)
-    @avPlayer.prepareToPlay
+    @avPlayers = recordings.collect do |recording|
+      avPlayer = AVAudioPlayer.alloc.initWithContentsOfURL(recording, error:err)
+      avPlayer.numberOfLoops = -1 if loop
+      avPlayer.prepareToPlay
+      avPlayer
+    end
   end
 
-
   def play
-    @avPlayer.play
+    @avPlayers.each { |avPlayer| avPlayer.play }
+  end
+
+  def stop
+    @avPlayers.each { |avPlayer| avPlayer.stop }
   end
 
 end

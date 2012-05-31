@@ -12,5 +12,6 @@ Motion::Project::App.setup do |app|
 
   app.pods do
     dependency 'ASIHTTPRequest'
+    dependency 'AWSiOSSDK'
   end
 end
