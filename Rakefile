@@ -10,6 +10,11 @@ Motion::Project::App.setup do |app|
   app.frameworks << 'CoreAudio'
   app.frameworks << 'AVFoundation'
 
+ app.development do
+    app.vendor_project "vendor/ocmock/Source", :xcode, xcodeproj: "OCMock.xcodeproj", target: "OCMockLib", products:["libOCMock.a"], headers_dir: "OCMock"
+ end  
+
+
   app.pods do
     dependency 'ASIHTTPRequest'
     dependency 'AWSiOSSDK'

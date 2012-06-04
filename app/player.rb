@@ -1,4 +1,6 @@
 class Player
+  attr_accessor :avPlayers
+
   def initialize recordings, loop=false
     recordings = recordings
 
@@ -6,13 +8,17 @@ class Player
     @avPlayers = recordings.collect do |recording|
       avPlayer = AVAudioPlayer.alloc.initWithContentsOfURL(recording, error:err)
       avPlayer.numberOfLoops = -1 if loop
-      avPlayer.prepareToPlay
       avPlayer
     end
   end
 
+  def duration
+    @avPlayers.first.duration
+  end
+
   def play
-    @avPlayers.each { |avPlayer| avPlayer.play }
+    @avPlayers.each { |avPlayer| avPlayer.prepareToPlay }
+    @avPlayers.collect { |avPlayer| avPlayer.play }
   end
 
   def stop

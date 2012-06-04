@@ -1,4 +1,5 @@
 class UI
+  attr_accessor :width
   def initialize width
     @width = width
   end
@@ -17,13 +18,22 @@ class UI
 
 
   def createButton yPos, action, normalTitle, delegate
-    margin = 20
-    button = UIButton.buttonWithType(UIButtonTypeRoundedRect)
+    button = getButton
     button.setTitle(normalTitle, forState:UIControlStateNormal)
     button.setTitle('Stop', forState:UIControlStateSelected)
     button.addTarget(delegate, action:action, forControlEvents:UIControlEventTouchUpInside)
     button.frame = getFrame yPos
     button
+  end
+
+  def boom
+    20
+  end
+
+  private
+
+  def getButton
+    UIButton.buttonWithType(UIButtonTypeRoundedRect)
   end
 
   def getFrame yPos

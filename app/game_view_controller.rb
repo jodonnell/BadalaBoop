@@ -1,4 +1,6 @@
 class GameViewController < UIViewController
+  attr_accessor :recorder
+
   def loadView
     self.view = GameView.alloc.init
   end
@@ -39,7 +41,12 @@ class GameViewController < UIViewController
       @recordings << @fileUrl.url
       newRecording
     else
-      @recording.record
+      if @recordings.empty?
+        @recording.record
+      else
+        @player = Player.new @recordings
+        @recording.recordForDuration(@player.duration)
+      end
     end
     @recordButton.selected = !@recordButton.selected?
     @isRecording = !@isRecording
@@ -86,5 +93,4 @@ class GameViewController < UIViewController
   def playButton
     @playButton
   end
-
 end
