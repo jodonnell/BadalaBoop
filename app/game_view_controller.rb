@@ -29,7 +29,6 @@ class GameViewController < UIViewController
     @recordView = RecordView.alloc.initWithFrame(CGRectMake(200, 40, 110, 30))
     @recordView.backgroundColor = UIColor.blackColor
     view.addSubview(@recordView)
-
   end
 
   def newRecording
@@ -38,6 +37,8 @@ class GameViewController < UIViewController
   end
 
   def stopRecording
+    @recordButton.selected = false
+    @isRecording = false
     hideRecordView
     @recording.stop
     @recordings << @fileUrl.url
@@ -45,6 +46,8 @@ class GameViewController < UIViewController
   end
 
   def startRecording
+    @recordButton.selected = true
+    @isRecording = true
     view.startTime = Time.now
     view.setTimer
 
@@ -53,11 +56,11 @@ class GameViewController < UIViewController
 
   def beginRecording
     showRecordView
-    if @recordings.empty?
-      @recording.record
-    else
-      @player = Player.new @recordings
-      @recording.recordForDuration(@player.duration)
+
+    @recording.record
+    unless @recordings.empty?
+      player = Player.new @recordings
+      @recordingTimer = NSTimer.scheduledTimerWithTimeInterval(player.duration, target:self, selector:'stopRecording', userInfo:nil, repeats:false)
     end
   end
 
@@ -67,9 +70,6 @@ class GameViewController < UIViewController
     else
       startRecording
     end
-
-    @recordButton.selected = !@recordButton.selected?
-    @isRecording = !@isRecording
   end
 
   def showRecordView
