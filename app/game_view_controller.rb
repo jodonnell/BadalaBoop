@@ -37,9 +37,6 @@ class GameViewController < UIViewController
     @recording = @recorder.newRecorder(@fileUrl.url)
   end
 
-  def doNothing
-  end
-
   def stopRecording
     hideRecordView
     @recording.stop
