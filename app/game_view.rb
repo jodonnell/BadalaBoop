@@ -14,21 +14,17 @@ class GameView < UIView
     return if @startTime.nil?
     clearBackground
 
-    UIColor.whiteColor.set
-
-    "Record in:".drawAtPoint(CGPoint.new(20, 40), withFont:UIFont.systemFontOfSize(20))
 
     timeLeft = 3 - (Time.now - @startTime).to_i
     
-    if timeLeft == 0
+    if timeLeft <= 0
       @timer.invalidate
       return
     end
 
-
-    font = UIFont.systemFontOfSize(60)
-    timeLeft.to_s.drawAtPoint(CGPoint.new(140, 20), withFont:font)
-
+    UIColor.whiteColor.set
+    "Record in:".drawAtPoint(CGPoint.new(20, 40), withFont:UIFont.systemFontOfSize(20))
+    timeLeft.to_s.drawAtPoint(CGPoint.new(140, 20), withFont:UIFont.systemFontOfSize(60))
   end
 
   def clearBackground
