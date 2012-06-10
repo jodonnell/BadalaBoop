@@ -26,10 +26,6 @@ class UI
     button
   end
 
-  def boom
-    20
-  end
-
   private
 
   def getButton

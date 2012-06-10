@@ -31,7 +31,7 @@ class Recorder
     propertySetError = 0
     allowMixing = Pointer.new(:bool)
     allowMixing[0] = true
-    propertySetError = AudioSessionSetProperty(1668114808, 4, allowMixing) # kAudioSessionProperty_OverrideCategoryMixWithOthers
+    propertySetError = AudioSessionSetProperty(1668114808, 4, allowMixing) # KAudioSessionProperty_OverrideCategoryMixWithOthers
   end
 
   def playThroughSpeaker

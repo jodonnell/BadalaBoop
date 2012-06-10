@@ -1,34 +1,40 @@
 class GameView < UIView
+  attr_accessor :startTime
+
+  def setTimer
+    @timer = NSTimer.scheduledTimerWithTimeInterval(1.0, target:self, selector:'redraw', userInfo:nil, repeats:1)
+    @timer.fire
+  end
+
+  def redraw
+    setNeedsDisplay
+  end
+
   def drawRect(rect)
-    if @moved
-      bgcolor = begin
-        red, green, blue = rand(100), rand(100), rand(100)
-        UIColor.colorWithRed(red/100.0, green:green/100.0, blue:blue/100.0, alpha:1.0)
-      end
-      text = "ZOMG!"
-    else
-      bgcolor = UIColor.blackColor
-      text = @touches ? "Touched #{@touches} times!" : "Hello RubyMotion!"
+    return if @startTime.nil?
+    clearBackground
+
+    UIColor.whiteColor.set
+
+    "Record in:".drawAtPoint(CGPoint.new(20, 40), withFont:UIFont.systemFontOfSize(20))
+
+    timeLeft = 3 - (Time.now - @startTime).to_i
+    
+    if timeLeft == 0
+      @timer.invalidate
+      return
     end
 
+
+    font = UIFont.systemFontOfSize(60)
+    timeLeft.to_s.drawAtPoint(CGPoint.new(140, 20), withFont:font)
+
+  end
+
+  def clearBackground
+    bgcolor = UIColor.blackColor
     bgcolor.set
     UIBezierPath.bezierPathWithRect(frame).fill
-
-    font = UIFont.systemFontOfSize(24)
-    UIColor.whiteColor.set
-    text.drawAtPoint(CGPoint.new(10, 20), withFont:font)
-  end
-
-  def touchesMoved(touches, withEvent:event)
-    @moved = true
-    setNeedsDisplay
-  end
-
-  def touchesEnded(touches, withEvent:event)
-    @moved = false
-    @touches ||= 0
-    @touches += 1
-    setNeedsDisplay
   end
 
 end

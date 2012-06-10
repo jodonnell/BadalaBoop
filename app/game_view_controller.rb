@@ -35,22 +35,33 @@ class GameViewController < UIViewController
   def doNothing
   end
 
+  def stopRecording
+    @recording.stop
+    @recordings << @fileUrl.url
+    newRecording
+  end
+
+  def startRecording
+    view.startTime = Time.now
+    view.setTimer
+
+    if @recordings.empty?
+      @recording.record
+    else
+      @player = Player.new @recordings
+      @recording.recordForDuration(@player.duration)
+    end
+  end
+
   def recordButtonTapped
     if @isRecording
-      @recording.stop
-      @recordings << @fileUrl.url
-      newRecording
+      stopRecording
     else
-      if @recordings.empty?
-        @recording.record
-      else
-        @player = Player.new @recordings
-        @recording.recordForDuration(@player.duration)
-      end
+      startRecording
     end
+
     @recordButton.selected = !@recordButton.selected?
     @isRecording = !@isRecording
-
   end
 
   def playButtonTapped
@@ -70,6 +81,7 @@ class GameViewController < UIViewController
       @player = Player.new @recordings, true
       @player.play
     end
+    @loopButton.selected = !@loopButton.selected?
     @isLooping = !@isLooping
   end
 
