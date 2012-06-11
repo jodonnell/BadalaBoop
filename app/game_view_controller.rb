@@ -25,10 +25,6 @@ class GameViewController < UIViewController
     view.addSubview(@playButton)
     view.addSubview(@upload)
     view.addSubview(@textField)
-
-    @recordView = RecordView.alloc.initWithFrame(CGRectMake(200, 40, 110, 30))
-    @recordView.backgroundColor = UIColor.blackColor
-    view.addSubview(@recordView)
   end
 
   def newRecording
@@ -41,7 +37,7 @@ class GameViewController < UIViewController
     @isRecording = false
 
     removeCountDownView
-    hideRecordView
+    removeRecordView
     @recording.stop
     @recordings << @fileUrl.url
     newRecording
@@ -67,7 +63,7 @@ class GameViewController < UIViewController
 
   def beginRecording
     removeRecordInView
-    showRecordView
+    addRecordView
 
     @recording.record
     unless @recordings.empty?
@@ -95,14 +91,14 @@ class GameViewController < UIViewController
     end
   end
 
-  def showRecordView
-    @recordView.isRecording = true
-    @recordView.setNeedsDisplay
+  def addRecordView
+    @recordView = RecordView.alloc.initWithFrame(CGRectMake(200, 40, 110, 30))
+    @recordView.backgroundColor = UIColor.blackColor
+    view.addSubview(@recordView)
   end
 
-  def hideRecordView
-    @recordView.isRecording = false
-    @recordView.setNeedsDisplay
+  def removeRecordView
+    @recordView.removeFromSuperview if @recordView
   end
 
   def playButtonTapped
