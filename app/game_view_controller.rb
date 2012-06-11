@@ -40,7 +40,7 @@ class GameViewController < UIViewController
     @recordButton.selected = false
     @isRecording = false
 
-    @countDownView.removeFromSuperview if @countDownView
+    removeCountDownView
     hideRecordView
     @recording.stop
     @recordings << @fileUrl.url
@@ -48,28 +48,43 @@ class GameViewController < UIViewController
   end
 
   def startRecording
-    @recordButton.selected = true
     @isRecording = true
-    view.startTime = Time.now
-    view.setTimer
+    @recordButton.selected = true
+    addRecordInView
 
     @timer = NSTimer.scheduledTimerWithTimeInterval(3.0, target:self, selector:'beginRecording', userInfo:nil, repeats:false)
   end
 
+  def addRecordInView
+    @recordInView = CountDownView.alloc.initWithFrameAndDuration(CGRectMake(20, 20, 150, 60), 3)
+    @recordInView.backgroundColor = UIColor.blackColor
+    view.addSubview(@recordInView)
+  end
+
+  def removeRecordInView
+    @recordInView.removeFromSuperview if @recordInView
+  end
+
   def beginRecording
+    removeRecordInView
     showRecordView
 
     @recording.record
     unless @recordings.empty?
       player = Player.new @recordings
-
-      @countDownView = CountDownView.alloc.initWithFrameAndDuration(CGRectMake(20, 20, 150, 60), player.duration)
-      @countDownView.backgroundColor = UIColor.blackColor
-      view.addSubview(@countDownView)
-
-
+      addCountDownView player.duration
       @recordingTimer = NSTimer.scheduledTimerWithTimeInterval(player.duration, target:self, selector:'stopRecording', userInfo:nil, repeats:false)
     end
+  end
+
+  def addCountDownView duration
+    @countDownView = CountDownView.alloc.initWithFrameAndDuration(CGRectMake(20, 20, 150, 60), duration)
+    @countDownView.backgroundColor = UIColor.blackColor
+    view.addSubview(@countDownView)
+  end
+
+  def removeCountDownView
+    @countDownView.removeFromSuperview if @countDownView
   end
 
   def recordButtonTapped
