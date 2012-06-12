@@ -29,18 +29,21 @@ class GameViewController < UIViewController
 
   def newRecording
     @fileUrl = FileUrl.new
-    @recording = @recorder.newRecorder(@fileUrl.url)
+    @recording = @recorder.newRecorder(@fileUrl.url, self)
   end
 
   def stopRecording
     @recordButton.selected = false
     @isRecording = false
 
-    removeCountDownView
-    removeRecordView
-    @recording.stop
+    removeRecordingViews
     @recordings << @fileUrl.url
     newRecording
+  end
+
+  def removeRecordingViews
+    removeCountDownView
+    removeRecordView
   end
 
   def startRecording
@@ -65,13 +68,20 @@ class GameViewController < UIViewController
     removeRecordInView
     addRecordView
 
-    @recording.record
-    unless @recordings.empty?
+    if @recordings.empty?
+      @recording.record
+    else
       player = Player.new @recordings
+      @recording.recordForDuration player.duration
       addCountDownView player.duration
-      @recordingTimer = NSTimer.scheduledTimerWithTimeInterval(player.duration, target:self, selector:'stopRecording', userInfo:nil, repeats:false)
+      NSTimer.scheduledTimerWithTimeInterval(player.duration, target:self, selector:'removeRecordingViews', userInfo:nil, repeats:false)    
     end
   end
+
+  def audioRecorderDidFinishRecording(recorder, successfully:flag)
+    stopRecording
+  end
+
 
   def addCountDownView duration
     @countDownView = CountDownView.alloc.initWithFrameAndDuration(CGRectMake(20, 20, 150, 60), duration)
@@ -85,6 +95,7 @@ class GameViewController < UIViewController
 
   def recordButtonTapped
     if @isRecording
+      @recording.stop
       stopRecording
     else
       startRecording

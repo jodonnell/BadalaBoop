@@ -6,10 +6,11 @@ class Recorder
     setActive
   end
 
-  def newRecorder url
+  def newRecorder url, delegate
     recorder = createRecorder(url)
     recorder.setDelegate(self)
     recorder.prepareToRecord
+    recorder.delegate = delegate
     recorder
   end
 
